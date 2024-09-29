@@ -1,13 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useMutation } from '@apollo/client'
 import { CREATE_BOOK } from '../queries'
-const NewBook = ({ setError }) => {
+import { useNavigate } from 'react-router-dom'
+const NewBook = ({ setError, token }) => {
+    const navigate = useNavigate()
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [published, setPublished] = useState('')
     const [genre, setGenre] = useState('')
     const [genres, setGenres] = useState([])
     const [addBook] = useMutation(CREATE_BOOK, {
+        onCompleted: () => {
+            setTitle('')
+            setPublished('')
+            setAuthor('')
+            setGenres([])
+            setGenre('')
+        },
         onError: (error) => {
             const messages = error.graphQLErrors
                 .map((e) => e.message)
@@ -15,7 +24,11 @@ const NewBook = ({ setError }) => {
             setError(messages)
         },
     })
-
+    useEffect(() => {
+        if (!token) {
+            navigate('/login')
+        }
+    }, [navigate, token])
     const submit = async (event) => {
         event.preventDefault()
         addBook({
@@ -26,16 +39,14 @@ const NewBook = ({ setError }) => {
                 genres: genres,
             },
         })
-        setTitle('')
-        setPublished('')
-        setAuthor('')
-        setGenres([])
-        setGenre('')
     }
 
     const addGenre = () => {
         setGenres(genres.concat(genre))
         setGenre('')
+    }
+    if (!token) {
+        return null
     }
 
     return (

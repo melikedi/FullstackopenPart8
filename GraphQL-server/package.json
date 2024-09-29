@@ -5,12 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"node index.js"
+    "dev": "node index.js"
   },
   "author": "Melike M.",
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^4.11.0",
-    "graphql": "^16.9.0"
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "graphql": "^16.9.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.0",
+    "mongoose-unique-validator": "^5.0.1"
   }
 }

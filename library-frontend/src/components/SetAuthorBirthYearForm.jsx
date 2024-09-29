@@ -11,7 +11,6 @@ const SetAuthorBirthYearForm = ({ setError }) => {
     const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
         refetchQueries: [{ query: ALL_AUTHORS }],
         onError: (error) => {
-            console.log('kkkk')
             const messages = error.graphQLErrors
                 .map((e) => e.message)
                 .join('\n')

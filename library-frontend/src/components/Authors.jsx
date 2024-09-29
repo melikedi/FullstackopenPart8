@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { ALL_AUTHORS } from '../queries'
 import SetAuthorBirthYearForm from './SetAuthorBirthYearForm'
-const Authors = ({ setError }) => {
+const Authors = ({ setError, token }) => {
     const result = useQuery(ALL_AUTHORS)
     if (result.loading) {
         return <div>loading...</div>
@@ -27,7 +27,7 @@ const Authors = ({ setError }) => {
                     ))}
                 </tbody>
             </table>
-            <SetAuthorBirthYearForm setError={setError} />
+            {token ? <SetAuthorBirthYearForm setError={setError} /> : null}
         </div>
     )
 }
