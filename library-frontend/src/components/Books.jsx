@@ -1,27 +1,25 @@
 import { useQuery } from '@apollo/client'
-import { GENRES, BOOKS_BY_GENRE } from '../queries'
-import { useState, useEffect } from 'react'
+import { GENRES, ALL_BOOKS } from '../queries'
+import { useState } from 'react'
+
 const Books = () => {
     const [genre, setGenre] = useState('')
-    const result = useQuery(BOOKS_BY_GENRE, {
+    const result = useQuery(ALL_BOOKS, {
         variables: { genre },
-        pollInterval: 2000,
     })
-    const resultGenre = useQuery(GENRES)
-    useEffect(() => {
-        resultGenre.refetch()
-    })
-    if (result.loading || resultGenre.loading) {
+    const genresResult = useQuery(GENRES)
+    let books
+    let genres
+    if (result.loading || genresResult.loading) {
         return <div>loading...</div>
+    } else {
+        books = result.data.allBooks
+        genres = genresResult.data.Genres.enumValues
+            .map((ev) => {
+                return { genre: ev.name, buttonname: ev.name }
+            })
+            .concat({ genre: '', buttonname: 'all genres' })
     }
-
-    const books = result.data.allBooks
-    const genres = resultGenre.data.Genres.enumValues
-        .map((ev) => {
-            return { genre: ev.name, buttonname: ev.name }
-        })
-        .concat({ genre: '', buttonname: 'all genres' })
-
     return (
         <div>
             <h2>books</h2>
@@ -36,7 +34,7 @@ const Books = () => {
                     {books.map((a) => (
                         <tr key={a.title}>
                             <td>{a.title}</td>
-                            <td>{a.authorName}</td>
+                            <td>{a.author}</td>
                             <td>{a.published}</td>
                         </tr>
                     ))}
@@ -47,7 +45,6 @@ const Books = () => {
                     key={g.genre}
                     onClick={() => {
                         setGenre(g.genre)
-                        result.refetch()
                     }}
                 >
                     {g.buttonname}

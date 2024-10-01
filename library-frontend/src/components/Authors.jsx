@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { ALL_AUTHORS } from '../queries'
 import SetAuthorBirthYearForm from './SetAuthorBirthYearForm'
+import PropTypes from 'prop-types'
 const Authors = ({ setError, token }) => {
     const result = useQuery(ALL_AUTHORS)
     if (result.loading) {
@@ -33,3 +34,7 @@ const Authors = ({ setError, token }) => {
 }
 
 export default Authors
+Authors.propTypes = {
+    token: PropTypes.string,
+    setError: PropTypes.func,
+}

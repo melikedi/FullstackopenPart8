@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useMutation } from '@apollo/client'
-import { CREATE_BOOK } from '../queries'
+import { CREATE_BOOK, ALL_BOOKS } from '../queries'
 import { useNavigate } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { updateCache } from '../helper'
 const NewBook = ({ setError, token }) => {
     const navigate = useNavigate()
     const [title, setTitle] = useState('')
@@ -17,9 +19,26 @@ const NewBook = ({ setError, token }) => {
             setGenres([])
             setGenre('')
         },
+        update: (cache, { data }) => {
+            updateCache(
+                cache,
+                { query: ALL_BOOKS, variables: { genre: '' } },
+                data.addBook,
+            )
+        },
         onError: (error) => {
             const messages = error.graphQLErrors
-                .map((e) => e.message)
+                .map(
+                    (e) =>
+                        e.message +
+                        '\n' +
+                        (Object.prototype.hasOwnProperty.call(
+                            e.extensions,
+                            'error',
+                        )
+                            ? e.extensions.error.message
+                            : ''),
+                )
                 .join('\n')
             setError(messages)
         },
@@ -91,3 +110,7 @@ const NewBook = ({ setError, token }) => {
 }
 
 export default NewBook
+NewBook.propTypes = {
+    token: PropTypes.string,
+    setError: PropTypes.func,
+}

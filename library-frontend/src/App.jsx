@@ -7,15 +7,28 @@ import Home from './components/Home'
 import Notify from './components/Notify'
 import LoginForm from './components/LoginForm'
 import Recommendations from './components/Recommendations'
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient, useSubscription } from '@apollo/client'
 import { Routes, Route } from 'react-router-dom'
+import { BOOK_ADDED, ALL_BOOKS } from './queries'
+import { updateCache } from './helper'
 
 const App = () => {
+    useSubscription(BOOK_ADDED, {
+        onData: ({ data }) => {
+            const bookAdded = data.data.bookAdded
+            const message = `A book with title '${bookAdded.title}' is added to library.`
+            notify(message)
+            updateCache(
+                client.cache,
+                { query: ALL_BOOKS, variables: { genre: '' } },
+                bookAdded,
+            )
+        },
+    })
     const client = useApolloClient()
     const [errorMessage, setErrorMessage] = useState(null)
     const [token, setToken] = useState(null)
     const [user, setUser] = useState(null)
-
     const notify = (message) => {
         setErrorMessage(message)
         setTimeout(() => {
@@ -37,7 +50,6 @@ const App = () => {
             setUser(user)
         }
     }, [])
-    console.log(user)
     const logout = () => {
         setToken(null)
         setUser(null)

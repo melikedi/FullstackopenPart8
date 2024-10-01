@@ -3,6 +3,7 @@ import Select from 'react-select'
 import { useQuery, useMutation } from '@apollo/client'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 const SetAuthorBirthYearForm = ({ setError }) => {
     const selectInputRef = useRef()
     const [selectedAuthor, setselectedAuthor] = useState('')
@@ -26,7 +27,6 @@ const SetAuthorBirthYearForm = ({ setError }) => {
         label: a.name,
     }))
     const submit = async (event) => {
-        console.log(selectedAuthor)
         event.preventDefault()
         updateAuthor({
             variables: {
@@ -66,3 +66,6 @@ const SetAuthorBirthYearForm = ({ setError }) => {
     )
 }
 export default SetAuthorBirthYearForm
+SetAuthorBirthYearForm.propTypes = {
+    setError: PropTypes.func,
+}

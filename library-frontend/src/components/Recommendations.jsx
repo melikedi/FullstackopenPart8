@@ -1,4 +1,4 @@
-import { BOOKS_BY_GENRE } from '../queries'
+import { ALL_BOOKS } from '../queries'
 import { useQuery } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 const Recommendations = ({ user }) => {
     const navigate = useNavigate()
     const favoriteGenre = user ? user.favoriteGenre : ''
-    const result = useQuery(BOOKS_BY_GENRE, {
+    const result = useQuery(ALL_BOOKS, {
         variables: { genre: favoriteGenre },
         pollInterval: 2000,
     })
